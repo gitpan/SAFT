@@ -3,3 +3,7 @@ Revision history for SAFT
 0.1.0  Wed Mar 30 19:00:00 2011
        Initial release.
 
+0.1.1  Tue May 17 22:00:00 2011
+       Minor changes in the documentation.
+       Added method set_bibliography().
+

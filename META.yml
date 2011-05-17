@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:               SAFT
-version:            0.1.0
+version:            0.1.1
 abstract:           create simple SAFT-XML encoded archival finding aids
 author:
     - Martin Hoppenheit <martin.hoppenheit@brhf.de>

@@ -7,7 +7,7 @@ use warnings;
 use utf8;
 
 use SAFT;
-use Test::More tests => 119;
+use Test::More tests => 120;
 
 # test method new
 my $saft = SAFT->new();
@@ -72,6 +72,14 @@ is(
     get_node_content('/Findmittel/Findmittel_Info/Einleitung/Text'),
     'abstract',
     'set_abstract()'
+);
+
+# test method set_bibliography
+$saft->set_bibliography('bibliography');
+is(
+    get_node_content('/Findmittel/Findmittel_Info/Einleitung/Bibliographie'),
+    'bibliography',
+    'set_bibliography()'
 );
 
 # test method set_finding_aid_note

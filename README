@@ -1,4 +1,4 @@
-SAFT version 0.1.0
+SAFT version 0.1.1 (2011-05-17)
 
 This module provides a convenient way to create archival finding aids in a
 format specified by the SAFT XML standard. Archives use XML encoded finding
@@ -9,7 +9,7 @@ If you don't know what a finding aid is in the first place, please refer to
 Wikipedia. SAFT is a standard for XML encoding those finding aids. The acronym
 SAFT stands for German "Standard-Austauschformat" (s.th. like "standard
 interchange format"). You can find the SAFT DTD and more (German)
-documentation on SAFT XML on this website:
+documentation on SAFT XML in the German Wikipedia and on this website:
 http://www.archivschule.de/forschung/retrokonversion-252/vorstudien-und-saft-xml/
 
 SAFT XML is not very widely used (in fact, since its tag names are German,
@@ -24,11 +24,10 @@ Perl module for EAD so far. For SAFT? Here you go.
 This module does not, however, provide every feature the SAFT DTD allows you
 to use. Instead methods are provided only for common cases and rather simple
 structures (i.e., cases I have stumbled upon and structures I have needed so
-far using SAFT XML).  Anything that's allowed by the SAFT DTD but not provided
+far using SAFT XML). Anything that's allowed by the SAFT DTD but not provided
 by this module could easily be achieved using a general XML module such as
-XML::LibXML. In fact, all that this module does is wrapping XML::LibXML, thus
-making your life easier (well, much easier compared to writing all code based
-directly on XML::LibXML, but whatever).
+XML::LibXML. In fact, a lot of the stuff this module does is actually done by
+wrapping XML::LibXML.
 
 
 INSTALLATION

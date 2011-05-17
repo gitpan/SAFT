@@ -7,7 +7,7 @@ use Carp;
 
 use 5.010;
 
-use version; our $VERSION = qv('0.1.0');
+use version; our $VERSION = qv('0.1.1');
 
 use XML::LibXML;
 
@@ -329,6 +329,32 @@ sub get_abstract {
     );
 
     return $abstract ? $abstract : '';
+}
+
+
+sub set_bibliography {
+    my $self         = shift;
+    my $bibliography = shift;
+
+    $self->_set_text_node(
+        $self->{root},
+        q(Findmittel_Info/Einleitung/Bibliographie),
+        $bibliography
+    );
+
+    return;
+}
+
+
+sub get_bibliography {
+    my $self = shift;
+
+    my ($bibliography) = $self->_get_text_node(
+        $self->{root},
+        q(Findmittel_Info/Einleitung/Bibliographie)
+    );
+
+    return $bibliography ? $bibliography : '';
 }
 
 
@@ -1103,7 +1129,7 @@ SAFT - create simple SAFT-XML encoded archival finding aids
 
 =head1 VERSION
 
-This document describes SAFT version 0.1.0
+This document describes SAFT version 0.1.1 (2011-05-17)
 
 
 =head1 SYNOPSIS
@@ -1145,7 +1171,7 @@ If you don't know what a finding aid is in the first place, please refer to
 Wikipedia. SAFT is a standard for XML encoding those finding aids. The acronym
 SAFT stands for German "Standard-Austauschformat" (s.th. like "standard
 interchange format"). You can find the SAFT DTD and more (German)
-documentation on SAFT XML on this website:
+documentation on SAFT XML in the German Wikipedia and on this website:
 http://www.archivschule.de/forschung/retrokonversion-252/vorstudien-und-saft-xml/
 
 SAFT XML is not very widely used (in fact, since its tag names are German,
@@ -1162,9 +1188,8 @@ to use. Instead methods are provided only for common cases and rather simple
 structures (i.e., cases I have stumbled upon and structures I have needed so
 far using SAFT XML). Anything that's allowed by the SAFT DTD but not provided
 by this module could easily be achieved using a general XML module such as
-XML::LibXML. In fact, all that this module does is wrapping XML::LibXML, thus
-making your life easier (well, much easier compared to writing all code based
-directly on XML::LibXML, but whatever).
+XML::LibXML. In fact, a lot of the stuff this module does is actually done by
+wrapping XML::LibXML.
 
 
 =head1 INTERFACE 
@@ -1204,7 +1229,9 @@ C<Datei_Info/Erstellung/Bearbeiter>).
     $saft->set_creation_date( $creation_date );
 
 This method sets the finding aid's creation date (element
-C<Datei_Info/Erstellung/Datum>).
+C<Datei_Info/Erstellung/Datum>). Calling the C<new> method implicitly calls
+C<$saft-E<gt>set_creation_date( scalar localtime )>, thus setting a reasonable
+default value.
 
 =item C<set_filename>
 
@@ -1220,6 +1247,13 @@ filename, this will reset the content of the relevant element.
 
 This method sets the finding aid's abstract (element
 C<Findmittel_Info/Einleitung/Text>).
+
+=item C<set_bibliography>
+
+    $saft->set_bibliography( $text );
+
+This method sets the finding aid's bibliography section (element
+C<Findmittel_Info/Einleitung/Bibliographie>).
 
 =item C<set_finding_aid_note>
 
@@ -1473,7 +1507,7 @@ C<$saft> object (cf. the C<toString> method of XML::LibXML).
 
 This method creates a file called C<$filename> containing the XML structure
 stored in the C<$saft> object. Calling the C<to_file> method implicitly calls
-C<<$saft->set_filename( $filename )>>.
+C<$saft-E<gt>set_filename( $filename )>.
 
 =back
 
@@ -1491,6 +1525,27 @@ module doesn't understand. Branch numbers must look like '3', '4.1', '1.5.2',
 ... (up to ten levels), or in other words like this:
 C</[1-9]\d*(\.[1-9]\d*)*/>.
 
+=item C<< E: Can't add classification branch ... '...' - a classification
+branch with the same number already exists >>
+
+You have tried to use the C<add_classification> method to create a
+classification branch that already exists (same number, different title). You
+probably have a clash of branch numbers here - check your input data!
+
+=item C<< E: Can't set title of nonexisting classification branch number
+... . To create a new branch use add_classification >>
+
+You have used the C<set_classification_title> method to set the title of a
+nonexisting branch. You either have passed the wrong branch number to
+C<set_classification_title>, or you should check you input data.
+
+=item C<< E: Can't find classification branch number ... to append file >>
+
+You have created a file (e.g. C<Sachakte> or C<Fallakte>) and passed the
+method a classification branch number the SAFT module can't find. Either your
+branch number has a format the module does not recognize or a classification
+branch with the given number doesn't exist. Check your input data.
+
 =item C<< W: Nested classification with more than 10 levels is not allowed by
 SAFT DTD >>
 
@@ -1507,20 +1562,6 @@ classification branch that already exists (same number, same title). Usually,
 this is no problem: You want a branch, you have the branch - nothing to be
 done ;-)
 
-=item C<< E: Can't add classification branch ... '...' - a classification
-branch with the same number already exists >>
-
-You have tried to use the C<add_classification> method to create a
-classification branch that already exists (same number, different title). You
-probably have a clash of branch numbers here - check your input data!
-
-=item C<< E: Can't set title of nonexisting classification branch number
-... . To create a new branch use add_classification >>
-
-You have used the C<set_classification_title> method to set the title of a
-nonexisting branch. You either have passed the wrong branch number to
-C<set_classification_title>, or you should check you input data.
-
 =item C<< W: Missing entry or value for element 'Signatur' >>
 
 You have created a file (e.g. C<Sachakte> or C<Fallakte>) element without
@@ -1534,13 +1575,6 @@ You have created a file (e.g. C<Sachakte>) element without providing a
 C<Titel> value. This will not prevent your element from being created, but
 usually you will not want to create files without a C<Titel>. Either you know
 what you are doing, or you should check your input data.
-
-=item C<< E: Can't find classification branch number ... to append file >>
-
-You have created a file (e.g. C<Sachakte> or C<Fallakte>) and passed the
-method a classification branch number the SAFT module can't find. Either your
-branch number has a format the module does not recognize or a classification
-branch with the given number doesn't exist. Check your input data.
 
 =back
 
@@ -1580,8 +1614,6 @@ allowed by the SAFT DTD.
 If you plan to use the element C<altübform> somewhere (e.g. method
 C<add_file_sachakte>), you have to use the C<utf8> pragma as well. And don't
 blame me for this, I haven't written the DTD ;-)
-
-No bugs have been reported.
 
 Please report any bugs or feature requests to C<bug-saft@rt.cpan.org>,
 or through the web interface at L<http://rt.cpan.org>.
