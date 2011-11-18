@@ -1,4 +1,4 @@
-SAFT version 0.1.1 (2011-05-17)
+SAFT version 0.2.0
 
 This module provides a convenient way to create archival finding aids in a
 format specified by the SAFT XML standard. Archives use XML encoded finding
@@ -6,10 +6,11 @@ aids to exchange metadata of their collections or to publish these metadata in
 web portals.
 
 If you don't know what a finding aid is in the first place, please refer to
-Wikipedia. SAFT is a standard for XML encoding those finding aids. The acronym
-SAFT stands for German "Standard-Austauschformat" (s.th. like "standard
-interchange format"). You can find the SAFT DTD and more (German)
-documentation on SAFT XML in the German Wikipedia and on this website:
+Wikipedia or ask an archivist near you. SAFT is a standard for XML encoding
+those finding aids. The acronym SAFT stands for German
+"Standard-Austauschformat" (s.th. like "standard interchange format"). You can
+find the SAFT DTD and more (German) documentation on SAFT XML in the German
+Wikipedia and on this website:
 http://www.archivschule.de/forschung/retrokonversion-252/vorstudien-und-saft-xml/
 
 SAFT XML is not very widely used (in fact, since its tag names are German,
@@ -17,9 +18,9 @@ probably nobody uses it outside Germany), a far more widespread format for
 such purposes is the American standard Encoded Archival Description (EAD).
 
 So why bother using SAFT anyway? Three reasons: First, it might be better
-suited to German archival tradition (personal opinion). Second, it might be
-easier to use than EAD (again, personal opinion). Third, I haven't heard of a
-Perl module for EAD so far. For SAFT? Here you go.
+suited to German archival tradition or your specific needs (personal opinion).
+Second, it might be easier to use than EAD (again, personal opinion). Third, I
+haven't heard of a Perl module for EAD so far. For SAFT? Here you go.
 
 This module does not, however, provide every feature the SAFT DTD allows you
 to use. Instead methods are provided only for common cases and rather simple
@@ -56,12 +57,12 @@ strict
 Carp
 utf8
 version
-XML::LibXML (tested with version 1.70)
+XML::LibXML (tested with minimum version 1.70)
 
 
 COPYRIGHT AND LICENCE
 
-Copyright (c) 2011, Martin Hoppenheit <martin.hoppenheit@brhf.de>
+Copyright (c) 2011, Martin Hoppenheit <mho@cpan.org>
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.

@@ -7,7 +7,7 @@ use warnings;
 use utf8;
 
 use SAFT;
-use Test::More tests => 120;
+use Test::More tests => 207;
 
 # test method new
 my $saft = SAFT->new();
@@ -567,7 +567,7 @@ is(
     'add_file_fallakte() (Ort)'
 );
 
-# test method add_file_fallakte, part 2
+# test method add_file_fallakte, part 2 (no sub elements)
 $saft->add_file_fallakte(
     '1.2',
     {
@@ -594,7 +594,7 @@ for my $elem (
     );
 }
 
-# test method add_file_fallakte, part 3
+# test method add_file_fallakte, part 3 (PCDATA key)
 $saft->add_file_fallakte(
     '1.3',
     {
@@ -619,7 +619,7 @@ for my $elem (
     );
 }
 
-# test method add_file_fallakte, part 4
+# test method add_file_fallakte, part 4 (no sub elements in Person)
 $saft->add_file_fallakte(
     '3.1',
     {
@@ -648,7 +648,7 @@ for my $elem (
     );
 }
 
-# test method add_file_fallakte, part 5
+# test method add_file_fallakte, part 5 (PCDATA key in Person)
 $saft->add_file_fallakte(
     '3.2',
     {
@@ -676,6 +676,429 @@ for my $elem (
         "add_file_fallakte() (part 5) (Person/$elem)"
     );
 }
+
+# test method add_file_karte, part 1 (complete)
+$saft->add_file_karte(
+    '1.1',
+    {
+        Signatur        => 'Signatur',
+        Laufzeit        => 'Laufzeit',
+        Titel           => 'Titel',
+        Beschreibung    => 'Beschreibung',
+        Bestellsig      => 'Bestellsig',
+        Altsig          => 'Altsig',
+        Provenienz      => 'Provenienz',
+        Vor_Prov        => 'Vor_Prov',
+        Abg_Stelle      => 'Abg_Stelle',
+        Akzession       => 'Akzession',
+        Sperrvermerk    => 'Sperrvermerk',
+        Umfang          => 'Umfang',
+        Lagerung        => 'Lagerung',
+        Zustand         => 'Zustand',
+        FM_Seite        => 'FM_Seite',
+        Bestand_Kurz    => 'Bestand_Kurz',
+        Bem             => 'Bem',
+        Hilfsfeld       => 'Hilfsfeld',
+        archref         => 'archref',
+        bibref          => 'bibref',
+        FM_ref          => 'FM_ref',
+        'altübform'     => 'altübform',
+        Register        => 'Register',
+        Ort             => {
+            Ort_Fkt     => 'Ort_Fkt',
+            PCDATA      => 'Ort',
+        },
+        Enthaelt        => 'Enthaelt',
+        Kartentyp       => 'Kartentyp',
+        Einzeichnung    => 'Einzeichnung',
+        Az              => 'Az',
+        Massstab        => 'Massstab',
+        Topogr_Daten    => {
+            TK              => 'TK',
+            Nr              => 'Nr',
+            GK_hoch         => 'GK_hoch',
+            GK_rechts       => 'GK_rechts',
+            GK_Identifikation => 'GK_Identifikation',
+            Breitengrad     => 'Breitengrad',
+            Laengengrad     => 'Laengengrad',
+            Bem             => 'Bem',
+            Hilfsfeld       => 'Hilfsfeld',
+        },
+        Person              => {
+            Pers_Name       => {
+                Vorname     => 'Vorname',
+                Nachname    => 'Nachname',
+            },
+            Rang_Titel      => 'Rang_Titel',
+            Beruf_Funktion  => 'Beruf_Funktion',
+            Institution     => 'Institution',
+            Datum           => {
+                Dat_Fkt     => 'Dat_Fkt',
+                Jahr        => 'Jahr',
+                Monat       => 'Monat',
+                Tag         => 'Tag',
+            },
+            Ort             => {
+                Ort_Fkt     => 'Ort_Fkt',
+                PCDATA      => 'Ort',
+            },
+            Nationalitaet   => 'Nationalitaet',
+            Geschlecht      => 'Geschlecht',
+            Konfession      => 'Konfession',
+            Familienstand   => 'Familienstand',
+            Anschrift       => 'Anschrift',
+            Bem             => 'Bem',
+            Hilfsfeld       => 'Hilfsfeld',
+            archref         => 'archref',
+            bibref          => 'bibref',
+            FM_ref          => 'FM_ref',
+            'altübform'     => 'altübform',
+            Register        => 'Register',
+        },
+        Institution     => 'Institution',
+        Ausfuehrung     => 'Ausfuehrung',
+        Material        => 'Material',
+        Entstehungsstufe => 'Entstehungsstufe',
+        Auflage         => 'Auflage',
+        Format          => {
+            M_Mass          => 'M_Mass',
+            Hoehe           => 'Hoehe',
+            Breite          => 'Breite',
+            Durchmesser     => 'Durchmesser',
+        },
+        Nebenkarten     => 'Nebenkarten',
+    }
+);
+
+for my $elem (
+    qw(
+        Signatur
+        Laufzeit
+        Titel
+        Beschreibung
+        Bestellsig
+        Altsig
+        Provenienz
+        Vor_Prov
+        Abg_Stelle
+        Akzession
+        Sperrvermerk
+        Umfang
+        Lagerung
+        Zustand
+        FM_Seite
+        Bestand_Kurz
+        Bem
+        Hilfsfeld
+        archref
+        bibref
+        FM_ref
+        altübform
+        Register
+        Enthaelt
+        Kartentyp
+        Einzeichnung
+        Az
+        Massstab
+        Institution
+        Ausfuehrung
+        Material
+        Entstehungsstufe
+        Auflage
+        Nebenkarten
+    )) {
+    is(
+        get_node_content(
+            '/Findmittel/Klassifikation/Klassifikation[Klass_Nr="1.1"]/'
+            . "Verzeichnungseinheiten/Karte/$elem"
+        ),
+        $elem,
+        "add_file_karte() ($elem)"
+    )
+}
+
+is(
+    get_node_content(
+        '/Findmittel/Klassifikation/Klassifikation[Klass_Nr="1.1"]/'
+        . 'Verzeichnungseinheiten/Karte/Laufzeit/LZ_Text'
+    ),
+    'Laufzeit',
+    'add_file_karte() (Laufzeit)'
+);
+
+is(
+    get_attribute_content(
+        '/Findmittel/Klassifikation/Klassifikation[Klass_Nr="1.1"]/'
+        . 'Verzeichnungseinheiten/Karte/Ort',
+        'Ort_Fkt'
+    ),
+    'Ort_Fkt',
+    'add_file_karte() (Ort/Ort_Fkt)'
+);
+is(
+    get_node_content(
+        '/Findmittel/Klassifikation/Klassifikation[Klass_Nr="1.1"]/'
+        . 'Verzeichnungseinheiten/Karte/Ort'
+    ),
+    'Ort',
+    'add_file_karte() (Ort)'
+);
+
+for my $elem (
+    qw(
+        TK
+        Nr
+        GK_hoch
+        GK_rechts
+        GK_Identifikation
+        Breitengrad
+        Laengengrad
+        Bem
+        Hilfsfeld
+    )) {
+    is(
+        get_node_content(
+            '/Findmittel/Klassifikation/Klassifikation[Klass_Nr="1.1"]/'
+            . "Verzeichnungseinheiten/Karte/Topogr_Daten/$elem"
+        ),
+        $elem,
+        "add_file_karte() (Topogr_Daten/$elem)"
+    );
+}
+
+for my $elem (
+    qw(
+        Rang_Titel
+        Beruf_Funktion
+        Institution
+        Nationalitaet
+        Geschlecht
+        Konfession
+        Familienstand
+        Anschrift
+        Bem
+        Hilfsfeld
+        archref
+        bibref
+        FM_ref
+        altübform
+        Register
+    )) {
+    is(
+        get_node_content(
+            '/Findmittel/Klassifikation/Klassifikation[Klass_Nr="1.1"]/'
+            . "Verzeichnungseinheiten/Karte/Person/$elem"
+        ),
+        $elem,
+        "add_file_karte() (Person/$elem)"
+    );
+}
+
+for my $elem (
+    qw(
+        Vorname
+        Nachname
+    )) {
+    is(
+        get_node_content(
+            '/Findmittel/Klassifikation/Klassifikation[Klass_Nr="1.1"]/'
+            . "Verzeichnungseinheiten/Karte/Person/Pers_Name/$elem"
+        ),
+        $elem,
+        "add_file_karte() (Person/Pers_Name/$elem)"
+    );
+}
+
+is(
+    get_attribute_content(
+        '/Findmittel/Klassifikation/Klassifikation[Klass_Nr="1.1"]/'
+        . 'Verzeichnungseinheiten/Karte/Person/Datum',
+        'Dat_Fkt'
+    ),
+    'Dat_Fkt',
+    'add_file_karte() (Person/Datum/Dat_Fkt)'
+);
+
+for my $elem (
+    qw(
+        Jahr
+        Monat
+        Tag
+    )) {
+    is(
+        get_node_content(
+            '/Findmittel/Klassifikation/Klassifikation[Klass_Nr="1.1"]/'
+            . "Verzeichnungseinheiten/Karte/Person/Datum/$elem"
+        ),
+        $elem,
+        "add_file_karte() (Person/Datum/$elem)"
+    );
+}
+
+is(
+    get_attribute_content(
+        '/Findmittel/Klassifikation/Klassifikation[Klass_Nr="1.1"]/'
+        . 'Verzeichnungseinheiten/Karte/Person/Ort',
+        'Ort_Fkt'
+    ),
+    'Ort_Fkt',
+    'add_file_karte() (Person/Ort/Ort_Fkt)'
+);
+is(
+    get_node_content(
+        '/Findmittel/Klassifikation/Klassifikation[Klass_Nr="1.1"]/'
+        . 'Verzeichnungseinheiten/Karte/Person/Ort'
+    ),
+    'Ort',
+    'add_file_karte() (Person/Ort)'
+);
+
+for my $elem (
+    qw(
+        Hoehe
+        Breite
+        Durchmesser
+    )) {
+    is(
+        get_node_content(
+            '/Findmittel/Klassifikation/Klassifikation[Klass_Nr="1.1"]/'
+            . "Verzeichnungseinheiten/Karte/Format/$elem"
+        ),
+        $elem,
+        "add_file_karte() (Format/$elem)"
+    );
+}
+
+is(
+    get_attribute_content(
+        '/Findmittel/Klassifikation/Klassifikation[Klass_Nr="1.1"]/'
+        . 'Verzeichnungseinheiten/Karte/Format',
+        'M_Mass'
+    ),
+    'M_Mass',
+    'add_file_karte() (Format/M_Mass)'
+);
+
+# test method add_file_karte, part 2 (no sub elements)
+$saft->add_file_karte(
+    '1.2',
+    {
+        Signatur            => 'Signatur',
+        Titel               => 'Titel',
+        Ort                 => 'Ort',
+        Topogr_Daten        => 'Topogr_Daten',
+        Person              => 'Person',
+        Format              => 'Format',
+    }
+);
+
+for my $elem (
+    qw(
+        Ort
+        Topogr_Daten
+        Person
+        Format
+    )) {
+    is(
+        get_node_content(
+            '/Findmittel/Klassifikation/Klassifikation[Klass_Nr="1.2"]/'
+            . "Verzeichnungseinheiten/Karte/$elem"
+        ),
+        $elem,
+        "add_file_karte() (part 2) ($elem)"
+    );
+}
+
+# test method add_file_karte, part 3 (PCDATA key)
+$saft->add_file_karte(
+    '1.3',
+    {
+        Signatur            => 'Signatur',
+        Titel               => 'Titel',
+        Ort                 => { PCDATA => 'Ort' },
+        Topogr_Daten        => { PCDATA => 'Topogr_Daten' },
+        Person              => { PCDATA => 'Person' },
+        Format              => { PCDATA => 'Format'},
+    }
+);
+
+for my $elem (
+    qw(
+        Ort
+        Topogr_Daten
+        Person
+        Format
+    )) {
+    is(
+        get_node_content(
+            '/Findmittel/Klassifikation/Klassifikation[Klass_Nr="1.3"]/'
+            . "Verzeichnungseinheiten/Karte/$elem"
+        ),
+        $elem,
+        "add_file_karte() (part 3) ($elem)"
+    );
+}
+
+# test method add_file_karte, part 4 (no sub elements in Person)
+$saft->add_file_karte(
+    '3.1',
+    {
+        Signatur            => 'Signatur',
+        Titel               => 'Titel',
+        Person              => {
+            Pers_Name       => 'Pers_Name',
+            Datum           => 'Datum',
+            Ort             => 'Ort',
+        },
+    }
+);
+
+for my $elem (
+    qw(
+        Pers_Name
+        Datum
+        Ort
+    )) {
+    is(
+        get_node_content(
+            '/Findmittel/Klassifikation/Klassifikation[Klass_Nr="3.1"]/'
+            . "Verzeichnungseinheiten/Karte/Person/$elem"
+        ),
+        $elem,
+        "add_file_karte() (part 4) (Person/$elem)"
+    );
+}
+
+# test method add_file_karte, part 5 (PCDATA key in Person)
+$saft->add_file_karte(
+    '3.2',
+    {
+        Signatur            => 'Signatur',
+        Titel               => 'Titel',
+        Person              => {
+            Pers_Name       => { PCDATA => 'Pers_Name' },
+            Datum           => { PCDATA => 'Datum' },
+            Ort             => { PCDATA => 'Ort' },
+        },
+    }
+);
+
+for my $elem (
+    qw(
+        Pers_Name
+        Datum
+        Ort
+    )) {
+    is(
+        get_node_content(
+            '/Findmittel/Klassifikation/Klassifikation[Klass_Nr="3.2"]/'
+            . "Verzeichnungseinheiten/Karte/Person/$elem"
+        ),
+        $elem,
+        "add_file_karte() (part 5) (Person/$elem)"
+    );
+}
+
 
 # test method to_string
 ok( $saft->to_string ne '', 'to_string()' );

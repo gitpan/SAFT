@@ -5,7 +5,7 @@ use Module::Build;
 my $builder = Module::Build->new(
     module_name         => 'SAFT',
     license             => 'perl',
-    dist_author         => 'Martin Hoppenheit <martin.hoppenheit@brhf.de>',
+    dist_author         => 'Martin Hoppenheit <mho@cpan.org>',
     dist_version_from   => 'lib/SAFT.pm',
     requires => {
         'Test::More'    => 0,

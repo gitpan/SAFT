@@ -7,3 +7,6 @@ Revision history for SAFT
        Minor changes in the documentation.
        Added method set_bibliography().
 
+0.2.0  
+       Minor changes in the documentation.
+       Added method add_file_karte().

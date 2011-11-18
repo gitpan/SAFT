@@ -7,7 +7,7 @@ use Carp;
 
 use 5.010;
 
-use version; our $VERSION = qv('0.1.1');
+use version; our $VERSION = qv('0.2.0');
 
 use XML::LibXML;
 
@@ -635,6 +635,122 @@ sub add_file_fallakte {
 }
 
 
+sub add_file_karte {
+    my $self           = shift;
+    my $classification = shift;
+    my $subelem_ref    = shift;
+
+    # create the new file element
+    my $file = XML::LibXML::Element->new('Karte');
+
+    # add file's sub-elements
+    if (defined $subelem_ref->{Signatur}) {
+        $file->appendTextChild( Signatur => $subelem_ref->{Signatur} );
+    }
+    else {
+        carp "W: Missing entry or value for element 'Signatur'";
+    }
+
+    if (defined $subelem_ref->{Laufzeit}) {
+        my $elem = XML::LibXML::Element->new('Laufzeit');
+        $elem->appendTextChild( LZ_Text => $subelem_ref->{Laufzeit} );
+        $file->appendChild($elem);
+    }
+
+    if (defined $subelem_ref->{Titel}) {
+        $file->appendTextChild( Titel => $subelem_ref->{Titel} );
+    }
+    else {
+        carp "W: Missing entry or value for element 'Titel'";
+    }
+
+    if (defined $subelem_ref->{Beschreibung}) {
+        $file->appendTextChild(Beschreibung => $subelem_ref->{Beschreibung} );
+    }
+
+    $self->_append_entity_ve_option($file, $subelem_ref);
+
+    if (defined $subelem_ref->{Ort}) {
+        $self->_append_element_ort(
+            $file, $subelem_ref->{Ort}
+        );
+    }
+    
+    if (defined $subelem_ref->{Enthaelt}) {
+        $file->appendTextChild( Enthaelt => $subelem_ref->{Enthaelt} );
+    }
+
+    if (defined $subelem_ref->{Kartentyp}) {
+        $file->appendTextChild( Kartentyp => $subelem_ref->{Kartentyp} );
+    }
+
+    if (defined $subelem_ref->{Einzeichnung}) {
+        $file->appendTextChild( Einzeichnung => $subelem_ref->{Einzeichnung});
+    }
+
+    if (defined $subelem_ref->{Az}) {
+        $file->appendTextChild(
+            Az => $subelem_ref->{Az}
+        );
+    }
+
+    if (defined $subelem_ref->{Massstab}) {
+        $file->appendTextChild( Massstab => $subelem_ref->{Massstab} );
+    }
+
+    if (defined $subelem_ref->{Topogr_Daten}) {
+        $self->_append_element_topogr_daten(
+            $file, $subelem_ref->{Topogr_Daten}
+        );
+    }
+
+    if (defined $subelem_ref->{Person}) {
+        $self->_append_element_person(
+            $file, $subelem_ref->{Person}
+        );
+    }
+
+    if (defined $subelem_ref->{Institution}) {
+        $file->appendTextChild(
+            Institution => $subelem_ref->{Institution}
+        );
+    }
+
+    if (defined $subelem_ref->{Ausfuehrung}) {
+        $file->appendTextChild( Ausfuehrung => $subelem_ref->{Ausfuehrung} );
+    }
+
+    if (defined $subelem_ref->{Material}) {
+        $file->appendTextChild( Material => $subelem_ref->{Material} );
+    }
+
+    if (defined $subelem_ref->{Entstehungsstufe}) {
+        $file->appendTextChild(
+            Entstehungsstufe => $subelem_ref->{Entstehungsstufe}
+        );
+    }
+
+    if (defined $subelem_ref->{Auflage}) {
+        $file->appendTextChild( Auflage => $subelem_ref->{Auflage} );
+    }
+
+    if (defined $subelem_ref->{Format}) {
+        $self->_append_element_format(
+            $file, $subelem_ref->{Format}
+        );
+    }
+
+    if (defined $subelem_ref->{Nebenkarten}) {
+        $file->appendTextChild( Nebenkarten => $subelem_ref->{Nebenkarten} );
+    }
+
+    # find the file's classification branch and append it
+    $self->_append_file_to_classification($file, $classification);
+
+    return;
+}
+
+
 sub to_string {
     my $self = shift;
     return $self->{doc}->toString(1);
@@ -1115,6 +1231,141 @@ sub _append_element_person {
 }
 
 
+# purpose   :   append a Topogr_Daten element to an element's sub-elements
+# arguments :   $parent - the XML::LibXML::Element where Topogr_Daten should
+#               be appended
+#           :   $subelem_ref - a hash reference (or a string), containing
+#               Topogr_Daten's sub-elements
+# returns   :   nothing
+# example   :   _append_element_topogr_daten(
+#                   $parent, { GK_hoch => '5624', GK_rechts => '3412' }
+#               );
+sub _append_element_topogr_daten {
+    my $self        = shift;
+    my $parent      = shift;
+    my $subelem_ref = shift;
+
+    my $topo_elem = XML::LibXML::Element->new('Topogr_Daten');
+    $parent->appendChild($topo_elem);
+
+    if (ref $subelem_ref ne 'HASH') { # allow direct PCDATA
+        $topo_elem->appendText($subelem_ref);
+    }
+    else {
+        # add the element's sub-elements
+        if (defined $subelem_ref->{TK}) {
+            $topo_elem->appendTextChild(
+                TK => $subelem_ref->{TK}
+            );
+        }
+
+        if (defined $subelem_ref->{Nr}) {
+            $topo_elem->appendTextChild(
+                Nr => $subelem_ref->{Nr}
+            );
+        }
+
+        if (defined $subelem_ref->{GK_hoch}) {
+            $topo_elem->appendTextChild(
+                GK_hoch => $subelem_ref->{GK_hoch}
+            );
+        }
+
+        if (defined $subelem_ref->{GK_rechts}) {
+            $topo_elem->appendTextChild(
+                GK_rechts => $subelem_ref->{GK_rechts}
+            );
+        }
+
+        if (defined $subelem_ref->{GK_Identifikation}) {
+            $topo_elem->appendTextChild(
+                GK_Identifikation => $subelem_ref->{GK_Identifikation}
+            );
+        }
+
+        if (defined $subelem_ref->{Breitengrad}) {
+            $topo_elem->appendTextChild(
+                Breitengrad => $subelem_ref->{Breitengrad}
+            );
+        }
+
+        if (defined $subelem_ref->{Laengengrad}) {
+            $topo_elem->appendTextChild(
+                Laengengrad => $subelem_ref->{Laengengrad}
+            );
+        }
+
+        if (defined $subelem_ref->{Bem}) {
+            $topo_elem->appendTextChild(
+                Bem => $subelem_ref->{Bem}
+            );
+        }
+
+        if (defined $subelem_ref->{Hilfsfeld}) {
+            $topo_elem->appendTextChild(
+                Hilfsfeld => $subelem_ref->{Hilfsfeld}
+            );
+        }
+
+        if (defined $subelem_ref->{PCDATA}) { # allow indirect PCDATA
+            $topo_elem->appendText($subelem_ref->{PCDATA});
+        }
+    }
+}
+
+
+# purpose   :   append a Format element to an element's sub-elements
+# arguments :   $parent - the XML::LibXML::Element where Format should be
+#           :   appended
+#           :   $subelem_ref - a hash reference (or a string), containing
+#               Formats's sub-elements
+# returns   :   nothing
+# example   :   _append_element_format(
+#                   $parent, { Hoehe => '60', Breite => '60' }
+#               );
+sub _append_element_format {
+    my $self        = shift;
+    my $parent      = shift;
+    my $subelem_ref = shift;
+
+    my $format_elem = XML::LibXML::Element->new('Format');
+    $parent->appendChild($format_elem);
+
+    if (ref $subelem_ref ne 'HASH') { # allow direct PCDATA
+        $format_elem->appendText($subelem_ref);
+    }
+    else {
+        # add the element's attributes
+        if (defined $subelem_ref->{M_Mass}) {
+            $format_elem->setAttribute( M_Mass => $subelem_ref->{M_Mass} );
+        }
+
+        # add the element's sub-elements
+        if (defined $subelem_ref->{Hoehe}) {
+            $format_elem->appendTextChild(
+                Hoehe => $subelem_ref->{Hoehe}
+            );
+        }
+
+        if (defined $subelem_ref->{Breite}) {
+            $format_elem->appendTextChild(
+                Breite => $subelem_ref->{Breite}
+            );
+        }
+
+        if (defined $subelem_ref->{Durchmesser}) {
+            $format_elem->appendTextChild(
+                Durchmesser => $subelem_ref->{Durchmesser}
+            );
+        }
+
+        if (defined $subelem_ref->{PCDATA}) { # allow indirect PCDATA
+            $format_elem->appendText($subelem_ref->{PCDATA});
+        }
+    }
+}
+
+
 1; # Magic true value required at end of module
 
 
@@ -1129,7 +1380,7 @@ SAFT - create simple SAFT-XML encoded archival finding aids
 
 =head1 VERSION
 
-This document describes SAFT version 0.1.1 (2011-05-17)
+This document describes SAFT version 0.2.0
 
 
 =head1 SYNOPSIS
@@ -1168,10 +1419,11 @@ aids to exchange metadata of their collections or to publish these metadata in
 web portals.
 
 If you don't know what a finding aid is in the first place, please refer to
-Wikipedia. SAFT is a standard for XML encoding those finding aids. The acronym
-SAFT stands for German "Standard-Austauschformat" (s.th. like "standard
-interchange format"). You can find the SAFT DTD and more (German)
-documentation on SAFT XML in the German Wikipedia and on this website:
+Wikipedia or ask an archivist near you. SAFT is a standard for XML encoding
+those finding aids. The acronym SAFT stands for German
+"Standard-Austauschformat" (s.th. like "standard interchange format"). You can
+find the SAFT DTD and more (German) documentation on SAFT XML in the German
+Wikipedia and on this website:
 http://www.archivschule.de/forschung/retrokonversion-252/vorstudien-und-saft-xml/
 
 SAFT XML is not very widely used (in fact, since its tag names are German,
@@ -1179,9 +1431,9 @@ probably nobody uses it outside Germany), a far more widespread format for
 such purposes is the American standard Encoded Archival Description (EAD).
 
 So why bother using SAFT anyway? Three reasons: First, it might be better
-suited to German archival tradition (personal opinion). Second, it might be
-easier to use than EAD (again, personal opinion). Third, I haven't heard of a
-Perl module for EAD so far. For SAFT? Here you go.
+suited to German archival tradition or your specific needs (personal opinion).
+Second, it might be easier to use than EAD (again, personal opinion). Third, I
+haven't heard of a Perl module for EAD so far. For SAFT? Here you go.
 
 This module does not, however, provide every feature the SAFT DTD allows you
 to use. Instead methods are provided only for common cases and rather simple
@@ -1494,6 +1746,149 @@ A possible example for C<\%subelems> might look like this:
         # ...
     }
 
+=item C<add_file_karte>
+
+    $saft->add_file_karte( $branch_number, \%subelems );
+
+This method creates a new record of type C<Karte> and appends it at the end of
+the classification branch determined by C<$branch_number> (example: '2.1.3').
+To achieve a certain order among the different records in a given
+classification branch you have to append them by calling C<add_file_karte> in
+the desired order (not as with C<add_classification_branch>).
+
+The new C<Karte>'s content is determined by the key/value pairs in the hash
+C<%subelems> (which is passed as a reference). The following keys and value
+types will be accepted:
+
+    key                 | value type
+    --------------------+--------------------------------------
+    Signatur (required) | scalar
+    Laufzeit            | scalar
+    Titel (required)    | scalar
+    Beschreibung        | scalar
+    Bestellsig          | scalar
+    Altsig              | scalar
+    Provenienz          | scalar
+    Vor_Prov            | scalar
+    Abg_Stelle          | scalar
+    Akzession           | scalar
+    Sperrvermerk        | scalar
+    Umfang              | scalar
+    Lagerung            | scalar
+    Zustand             | scalar
+    FM_Seite            | scalar
+    Bestand_Kurz        | scalar
+    Bem                 | scalar
+    Hilfsfeld           | scalar
+    archref             | scalar
+    bibref              | scalar
+    FM_ref              | scalar
+    altübform           | scalar
+    Register            | scalar
+    Ort                 | scalar or hash reference (see below)
+    Enthaelt            | scalar
+    Kartentyp           | scalar
+    Einzeichnung        | scalar
+    Az                  | scalar
+    Massstab            | scalar
+    Topogr_Daten        | scalar or hash reference (see below)
+    Person              | scalar or hash reference (see below)
+    Institution         | scalar
+    Ausfuehrung         | scalar
+    Material            | scalar
+    Entstehungsstufe    | scalar
+    Auflage             | scalar
+    Format              | scalar or hash reference (see below)
+    Nebenkarten         | scalar
+
+Some keys will accept either a simple scalar value or a hash reference, your
+choice will depend on the complexity of your data. The following tables list
+the keys and value types that will be accepted, respectively. The special key
+C<PCDATA> can be used to mix child elements and PCDATA content, or to create
+elements with attributes (you will need a hash for these, so you can't pass a
+scalar with the element's text content - just use the C<PCDATA> key).
+    
+    Ort
+    key                 | value type
+    --------------------+--------------------------------------
+    Ort_Fkt (attribute) | scalar
+    PCDATA              | scalar
+
+    Topogr_Daten
+    key                 | value type
+    --------------------+--------------------------------------
+    TK                  | scalar
+    Nr                  | scalar
+    GK_hoch             | scalar
+    GK_rechts           | scalar
+    GK_Identifikation   | scalar
+    Breitengrad         | scalar
+    Laengengrad         | scalar
+    Bem                 | scalar
+    Hilfsfeld           | scalar
+    PCDATA              | scalar
+
+    Person
+    key                 | value type
+    --------------------+--------------------------------------
+    Pers_Name           | scalar or hash reference (see below)
+    Rang_Titel          | scalar
+    Beruf_Funktion      | scalar
+    Institution         | scalar
+    Datum               | scalar or hash reference (see below)
+    Ort                 | scalar or hash reference (see above)
+    Nationalitaet       | scalar
+    Geschlecht          | scalar
+    Konfession          | scalar
+    Familienstand       | scalar
+    Anschrift           | scalar
+    Bem                 | scalar
+    Hilfsfeld           | scalar
+    archref             | scalar
+    bibref              | scalar
+    FM_ref              | scalar
+    altübform           | scalar
+    Register            | scalar
+    PCDATA              | scalar
+
+    Pers_Name
+    key                 | value type
+    --------------------+--------------------------------------
+    Vorname             | scalar
+    Nachname            | scalar
+    PCDATA              | scalar
+
+    Datum
+    key                 | value type
+    --------------------+--------------------------------------
+    Dat_Fkt (attribute) | scalar
+    Jahr                | scalar
+    Monat               | scalar
+    Tag                 | scalar
+    PCDATA              | scalar
+
+    Format
+    key                 | value type
+    --------------------+--------------------------------------
+    M_Mass (attribute)  | scalar
+    Hoehe               | scalar
+    Breite              | scalar
+    Durchmesser         | scalar
+    PCDATA              | scalar
+
+A possible example for C<\%subelems> might look like this:
+
+    {
+        Signatur    => '42',
+        Titel       => 'Map of Mordor',
+        Format      => '50cm x 50cm',
+        Ort         => {
+            Ort_Fkt     => 'Druckort',
+            PCDATA      => 'Minas Tirith',
+        },
+        # ...
+    }
+
 =item C<to_string>
 
     $string = $saft->to_string();
@@ -1550,9 +1945,11 @@ branch with the given number doesn't exist. Check your input data.
 SAFT DTD >>
 
 You have passed the C<add_classification> method a branch number with more
-than ten levels. SAFT uses the level attribute of element C<Klassifikation> to
-store the depth of a classification branch, and for this attribute only the
-values 01..10 are allowed.
+than ten levels. SAFT uses the C<level> attribute of element C<Klassifikation>
+to store the depth of a classification branch, and for this attribute only the
+values 01..10 are allowed. However, the classification branch will be created
+anyway, albeit it will have a C<level> attribute with a value > 10, thus not
+being compliant to the SAFT DTD anymore.
 
 =item C<< W: Branch ... '...' already exists, repeated attempt to create it
 was ignored >>
@@ -1596,7 +1993,7 @@ pragmas:
 
 =item * C<version>
 
-=item * C<XML::LibXML> (tested with version 1.70)
+=item * C<XML::LibXML> (tested with minimum version 1.70)
 
 =back
 
@@ -1615,19 +2012,24 @@ If you plan to use the element C<altübform> somewhere (e.g. method
 C<add_file_sachakte>), you have to use the C<utf8> pragma as well. And don't
 blame me for this, I haven't written the DTD ;-)
 
+Even though the DTD might allow this, you can't create multiple occurences of
+the same sub-element (e.g. Datum or Az) via the add_file_foo methods. This is
+because you pass the sub-elements in a hash and so each hash key (aka
+sub-element-to-be) must be unique. I'm sorry...
+
 Please report any bugs or feature requests to C<bug-saft@rt.cpan.org>,
 or through the web interface at L<http://rt.cpan.org>.
 
 
 =head1 AUTHOR
 
-Martin Hoppenheit  C<< <martin.hoppenheit@brhf.de> >>
+Martin Hoppenheit  C<< <mho@cpan.org> >>
 
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2011, Martin Hoppenheit C<< <martin.hoppenheit@brhf.de> >>. All
-rights reserved.
+Copyright (c) 2011, Martin Hoppenheit C<< <mho@cpan.org> >>. All rights
+reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlartistic>.

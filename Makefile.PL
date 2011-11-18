@@ -4,7 +4,7 @@ use ExtUtils::MakeMaker;
 
 WriteMakefile(
     NAME                => 'SAFT',
-    AUTHOR              => 'Martin Hoppenheit <martin.hoppenheit@brhf.de>',
+    AUTHOR              => 'Martin Hoppenheit <mho@cpan.org>',
     VERSION_FROM        => 'lib/SAFT.pm',
     ABSTRACT_FROM       => 'lib/SAFT.pm',
     PL_FILES            => {},
